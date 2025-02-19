@@ -24,6 +24,7 @@
     <td><img src="https://github.com/SKNETWORKS-FAMILY-AICAMP/SKN07-2nd-3Team/blob/main/images/%EB%8F%99%EC%9D%B5.jpg" width="175" height="175"></td>
     <td><img src="https://github.com/SKNETWORKS-FAMILY-AICAMP/SKN07-2nd-3Team/blob/main/images/%EB%8F%99%EC%9D%B5.jpg" width="175" height="175"></td>
 
+
   </tr>
   <tr>
     <th>팀장</th>
@@ -32,7 +33,7 @@
     <th>팀원</th>
     <th>팀원</th>
     <th>팀원</th>
-    <th>팀원</th>
+ 
   </tr>
 </table>
 
