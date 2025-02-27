@@ -39,257 +39,229 @@
 
 ---
 
-## 프로젝트 소개<BR>
-고객 이탈률 예측은 고객 경험을 개선하고 경쟁력을 높이는 데 중요한 역할을 합니다. 예측 모델을 통해 고객의 불만이나 불편을 사전에 파악하고 이를 해결함으로써 고객 만족도를 향상시킬 수 있습니다. 또한, 이탈률을 예측함으로써 경쟁사보다 더 나은 서비스를 제공하고, 고객 충성도를 유지하며, 장기적인 성장을 이끌어낼 수 있습니다.<BR>
-우리는 구독 기반 서비스 기업, 전자상거래 기업, 금융 서비스 기업 등 서비스 제공 기업을 위한 **고객 이탈률 예측 모델**을 구축했습니다. 이를 통해 기업은 이탈 대응 전략을 수립하고, 서비스 개선안을 도출하여 더 효율적인 고객 관리와 경쟁력 있는 시장 전략을 마련할 수 있습니다.
-
-
-
+# 통신사 고객 이탈 예측 모델 개발 보고서
 ---
-### 개요
-#### 가입 고객 이탈 예측 모델 설계 및 구축
-<br>
 
-**1. 훈련·테스트 데이터 선정**<br>
-&nbsp;&nbsp;&nbsp;&nbsp;- 결측치가 적고 불필요한 feature가 적은 데이터를 선정해 모델 학습<br>
-&nbsp;&nbsp;&nbsp;&nbsp;- Kaggle 머신러닝 웹 커뮤니티의 **Telecom Churn Dataset** 채택<br>
-
-**2. ML 성능 비교**<br>
-&nbsp;&nbsp;&nbsp;&nbsp;- ML 알고리즘 5개를 선정해 동일한 데이터로 성능 비교 후, 가장 성능이 좋은 알고리즘을 채택 <br>
-
-**3. 예측 모델 설계·구축**<br>
-&nbsp;&nbsp;&nbsp;&nbsp;- 채택한 알고리즘으로 ML 모델 설계 및 구축하여 성능 검증<br>
-
-### 목표
-여러 머신러닝 모델의 비교, 분석을 통해 고객 이탈 예측에 가장 적합한 고성능 모델을 구축합니다.
+## 📊 목차
+1. [데이터 분석 및 전처리](#1-데이터-분석-및-전처리)
+2. [특성 엔지니어링](#2-특성-엔지니어링)
+3. [모델 개발 과정](#3-모델-개발-과정)
+4. [결과 및 시사점](#4-결과-및-시사점)
+5. [기술 스택 및 향후 계획](#5-기술-스택-및-향후-계획)
 
 ---
 
-## 주요 데이터 설명
-<table> <tr> <th>Number</th> <th>Column</th> <th>Meaning</th> <th>Example</th> </tr> <tr> <th>1</th> <th>State</th> <th>고객이 거주하는 주</th> <th>CA" (California), "NY" (New York)</th> </tr> <tr> <th>2</th> <th>International plan</th> <th>국제 전화 요금제 가입 여부</th> <th>"Yes" (가입), "No" (미가입)</th> </tr> <tr> <th>3</th> <th>Voice mail plan</th> <th>음성사서함 요금제 가입 여부</th> <th>"Yes" (가입), "No" (미가입)</th> </tr> <tr> <th>4</th> <th>Total day minutes</th> <th>주간(낮 시간) 동안 사용한 총 통화 시간(분)</th> <th>265.1 → 265.1분 통화</th> </tr> <tr> <th>5</th> <th>Total eve minutes</th> <th>저녁 시간 동안 사용한 총 통화 시간(분)</th> <th>197.4 → 197.4분 통화</th> </tr> <tr> <th>6</th> <th>Total intl minutes</th> <th>국제 통화에 사용된 총 시간(분)</th> <th>10.0 → 10분 사용</th> </tr> <tr> <th>7</th> <th>Customer service calls</th> <th>고객 센터에 전화한 횟수</th> <th>1 → 1회 전화</th> </tr> <tr> <th>8</th> <th>Churn</th> <th>고객 이탈 여부</th> <th>True (이탈), False (유지)</th> </tr> </table>
+## 1. 데이터 분석 및 전처리
+
+### 1.1 데이터셋 개요
+| 항목 | 내용 |
+|------|------|
+| 총 고객 수 | 7,043명 |
+| 이탈률 | 26.54% |
+| 고객 유지 기간 | 0-72개월 |
+| 결측치 | TotalCharges 11건 (0.16%) |
+| 특성 수 | 원본 21개 → 최종 6개 |
+
+
+### 1.2 주요 이탈 요인 분석
+| 요인 | 세부 내용 | 이탈률 | 전체 비중 |
+|------|-----------|---------|------------|
+| 계약 유형 | Month-to-month<br>One-year<br>Two-year | 42.7%<br>11.3%<br>2.8% | 55.0%<br>20.9%<br>24.1% |
+| 서비스 유형 | Fiber optic<br>DSL<br>미사용 | 41.9%<br>19.0%<br>7.4% | 44.0%<br>34.4%<br>21.6% |
+| 결제 방식 | Electronic check<br>Mailed check<br>Bank transfer<br>Credit card | 45.3%<br>19.1%<br>16.7%<br>15.2% | 33.6%<br>23.2%<br>21.8%<br>21.4% |
+
+![image](https://github.com/user-attachments/assets/108532b5-05f8-4a35-95f8-8082c80dcfb8)
+![image](https://github.com/user-attachments/assets/69b92809-52ec-4d82-bf04-28c92a629375)
+![image](https://github.com/user-attachments/assets/6f56f1f3-e178-46a2-a4f3-e6260d725c49)
+> 주요 요인별 이탈률 비교 및 분석
+
+### 1.3 결측치 처리
+
+~~~python
+TotalCharges 결측치 처리
+df.loc[df['TotalCharges'].isna(), 'TotalCharges'] = \
+df.loc[df['TotalCharges'].isna(), 'MonthlyCharges']
+~~~
+![image](https://github.com/user-attachments/assets/12bf96ab-becb-4964-9dc0-b486dd47a668)
+> 결측치 처리 전후의 TotalCharges 분포 비교
 
 ---
 
-## EDA
-### Correlation Matrix
-![download](https://github.com/user-attachments/assets/6f8277cb-c581-465d-b751-56b82aa42e2b)
-- Total day minutes, Customer service calls 등과 Churn 간의 상관관계가 두드러지게 나타남. 주간 통화 시간이 길수록 이탈률이 높아지는 패턴이 확인됨
+## 2. 특성 엔지니어링
 
-### 주간 통화 이용률
-![download](https://github.com/user-attachments/assets/0506510c-8f6c-4107-ad54-341797303ecf)
-- 낮 시간(Total day minutes) 동안 통화 시간이 많은 고객의 이탈률이 상대적으로 높게 나타남. 이는 통화량이 많을수록 불만족 요인이 발생할 가능성이 있음
+### 2.1 특성 개발 과정
+| 단계 | 개발 특성 | 계산 방법 | 목적 |
+|------|------------|------------|------|
+| 1차 | 계약기간_수치 | `contract_type_mapping` | 계약 기간 수치화 |
+| | 총_서비스_수 | `service_columns.sum()` | 서비스 활용도 측정 |
+| | 고객_위험도 | `risk_factors.mean()` | 이탈 위험 정량화 |
+| 2차 | 요금_증가율 | `(total - monthly) / tenure` | 요금 변동 추적 |
+| | 고객_충성도 | `tenure * monthly_charges` | 고객 가치 산정 |
+| | 서비스당_요금 | `monthly / total_services` | 서비스 효율성 |
 
-### 야간 통화 이용률
-![download](https://github.com/user-attachments/assets/f3801354-610a-4863-8835-173f94369d2d)
-- 저녁 시간(Total eve minutes) 동안의 통화량은 이탈률과 상대적으로 낮은 상관관계를 보임
+![image](https://github.com/user-attachments/assets/f7d0244b-1415-466f-aee5-22be149fd66f)
+![image](https://github.com/user-attachments/assets/e1f5a55e-3b3c-4b4d-9cd6-d206fc5721fa)
 
-### 심야 통화 이용률
-![download](https://github.com/user-attachments/assets/986f494c-42d6-4a46-9389-824cc258261a)
-- 야간 시간(Total night minutes)의 통화량은 고객 이탈과의 상관관계가 미미함
+> 개발된 특성들 간의 상관관계 분석
 
-### 고객센터 상담 비율
-<table>
-  <tr>
-    <td align="center"><b>Distribution of Customer Service Calls</b></td>
-    <td align="center"><b>Customer Service Calls별 Churn 비율</b></td>
-  </tr>
-  <tr>
-    <td>
-      <img src="https://github.com/user-attachments/assets/1dac0981-380d-46f8-b8cc-7872f46c555c" alt="Distribution Graph" width="600">
-    </td>
-    <td>
-      <img src="https://github.com/SKNETWORKS-FAMILY-AICAMP/SKN07-2nd-3Team/blob/main/images/curstomer_service_calls.png" alt="Churn Rate Graph" width="400">
-    </td>
-  </tr>
-</table>
+### 2.2 최종 선정 특성
+| 특성 | 중요도 | 선정 이유 | 상관관계 |
+|------|---------|------------|------------|
+| tenure | 0.12 | 고객 충성도 기본 지표 | 독립적 |
+| MonthlyCharges | 0.11 | 수익성 직접 지표 | 요금 관련 대표성 |
+| 고객_위험도 | 0.09 | 종합 위험 지표 | 독립적 |
+| 서비스당_요금 | 0.12 | 효율성 지표 | 요금과 약한 상관관계 |
+| 총_서비스_수 | 0.08 | 서비스 활용도 | 독립적 |
+| 인터넷_서비스_등급 | 0.07 | 서비스 수준 | 독립적 |
 
-- Customer service calls 횟수가 증가할수록 이탈 확률이 급격히 높아짐. 이는 고객 불만족과 문제 해결의 어려움을 반영함
+![image](https://github.com/user-attachments/assets/872c29ba-c61c-4954-b17b-35454a5dd47b)
 
-### 국제전화 가입비율
-<table>
-  <tr>
-    <td align="center"><b>국제전화 분포</b></td>
-    <td align="center"><b>국제전화 가입별 Churn 비율</b></td>
-  </tr>
-  <tr>
-    <td>
-      <img src="https://github.com/user-attachments/assets/1db52c47-3d11-4d62-b159-37f264a24ee5" alt="Distribution Graph" width="500">
-    </td>
-    <td>
-      <img src="https://github.com/SKNETWORKS-FAMILY-AICAMP/SKN07-2nd-3Team/blob/main/images/Subscribed.png" alt="Churn Rate Graph" width="500">
-    </td>
-  </tr>
-</table>
-
-- 국제전화 요금제에 가입한 고객의 이탈률이 더 높기 때문에, 요금제의 서비스 품질 개선 또는 고객 불만족 해소를 위한 전략이 필요함
-
-### 음성사사함 가입비율
-<table>
-  <tr>
-    <td align="center"><b>음성사서함 분포</b></td>
-    <td align="center"><b>음성사서함 가입별 Churn 비율</b></td>
-  </tr>
-  <tr>
-    <td>
-      <img src="https://github.com/user-attachments/assets/aa216f78-ad8d-4a0b-83d1-7b5d57e456bf" alt="Distribution Graph" width="500">
-    </td>
-    <td>
-      <img src="https://github.com/SKNETWORKS-FAMILY-AICAMP/SKN07-2nd-3Team/blob/main/images/voice_mail.png" alt="Churn Rate Graph" width="500">
-    </td>
-  </tr>
-</table>
-
-- Voice mail plan 미가입 고객의 이탈률이 상대적으로 높음. 음성사서함 요금제가 고객 유지에 기여할 가능성 존재
-
-### 이탈률
-![download](https://github.com/user-attachments/assets/aa611630-d6a6-473f-8955-8428e40611d2)
-- 전체 고객 중 이탈 고객의 비율이 낮지만, 특정 조건(높은 통화량, 고객센터 이용량)에서 집중적으로 이탈이 발생함
-
-### 고객센터 통화량에 따른 이탈률 & 이상치
-![churn_vs_customer_service_calls](https://github.com/user-attachments/assets/e491b51b-ce10-41ea-b632-9ded739fc8e7)
-- 고객센터에 5회 이상 전화를 한 고객은 이탈률이 현저히 높음. 이는 서비스 불만족이 주요 원인임을 나타냄
-
-### 통화량이 높은 고객들 대상 이탈률
-![churn_vs_total_day_minutes](https://github.com/user-attachments/assets/9618780c-ebd7-4a49-8a94-511026fcb1cf)
-- 통화량이 비정상적으로 높은 고객군에서 이탈률이 급격히 상승함. 이러한 고객은 별도의 관리가 필요함
-
-### 데이터 전처리
-<pre>
-<code>
-columns_to_drop = ['State', 'Area code']
-train_data = train_data.drop(columns=columns_to_drop, axis=1)
-test_data = test_data.drop(columns=columns_to_drop, axis=1)
-</code>
-</pre>
+> Random Forest 기반 특성 중요도 시각화
 
 ---
 
-## Machine Learning
-1. KNN Model
-2. Decision Tree Model
-3. XGBoost Model
-4. Random Forest Model
+## 3. 모델 개발 과정
 
-### Evaluation Metrics by Model
-<table>
-  <tr>
-    <th>Model</th>
-    <th>Accuracy</th>
-    <th>Precision</th>
-    <th>Recall</th>
-    <th>F1 Score</th>
-    <th>ROC AUC</th>
-  </tr>
-  <tr>
-    <th>KNN</th>
-    <th>0.885</th>
-    <th>0.828</th>
-    <th>0.304</th>
-    <th>0.444</th>
-    <th>0.646</th>
-  </tr>
-  <tr>
-    <th>Decision Tree</th>
-    <th>0.913</th>
-    <th>0.680</th>
-    <th>0.737</th>
-    <th>0.707</th>
-    <th>0.840</th>
-  </tr>
-  <tr>
-    <th>XGBoost</th>
-    <th>0.957</th>
-    <th>0.934</th>
-    <th>0.747</th>
-    <th>0.830</th>
-    <th>0.911</th>
-  </tr>
-  <tr>
-    <th>Random Forest</th>
-    <th>0.958</th>
-    <th>0.972</th>
-    <th>0.737</th>
-    <th>0.838</th>
-    <th>0.924</th>
-  </tr>
-</table>
+### 3.1 모델 발전 과정
+| 모델 | 정확도 | ROC-AUC | 이탈고객<br>Recall | 이탈고객<br>Precision | F1-score | 과적합<br>(차이) |
+|------|---------|----------|-------------------|---------------------|-----------|----------------|
+| Base | 0.80 | 0.8336 | 0.52 | 0.64 | 0.57 | - |
+| SMOTE | 0.75 | 0.8279 | 0.74 | 0.52 | 0.61 | - |
+| Tuned | 0.74 | 0.8017 | 0.64 | 0.51 | 0.57 | 0.0934 |
+| Tuned V2 | 0.75 | 0.8276 | 0.73 | 0.52 | 0.61 | 0.0541 |
 
-### 최종 모델 선정 과정
-이번 프로젝트에서는 XGBoost와 Random Forest 모델이 가장 높은 성능을 보였습니다. 각 모델의 주요 성능 지표를 비교한 결과 다음과 같은 결론을 도출했습니다.
+![모델 성능 비교](./images/model_performance_comparison.png)
+> 각 모델별 주요 성능 지표 비교
 
-&nbsp;&nbsp;&nbsp;&nbsp;- Random Forest는 Precision에서 가장 높은 성능을 보였으나, Recall이 상대적으로 낮아 이탈 고객을 놓칠 가능성이 있었습니다.
+### 3.2 하이퍼파라미터 최적화
+python
+최종 모델 파라미터
+final_params = {
+'n_estimators': 400,
+'max_depth': 10,
+'min_samples_split': 5,
+'min_samples_leaf': 2,
+'max_features': 'sqrt',
+'class_weight': 'balanced'
+}
 
-&nbsp;&nbsp;&nbsp;&nbsp;- XGBoost는 Recall과 F1 Score에서 더 균형 잡힌 성능을 보였습니다. 특히 Recall이 Random Forest보다 높아 이탈 고객을 더 많이 예측하는 강점을 보였습니다.
 
-### 최종 모델 선정 (XGBoost 선택)
-1. 균형 잡힌 성능<br>
-&nbsp;&nbsp;&nbsp;&nbsp;- Recall이 Random Forest보다 높아 이탈 고객을 더 많이 예측할 수 있습니다.<br>
-&nbsp;&nbsp;&nbsp;&nbsp;- F1 Score도 높은 수준을 유지하며 정확도와 재현율 간 균형을 이룹니다.<br>
-2. 과적합 방지<br>
-&nbsp;&nbsp;&nbsp;&nbsp;- Random Forest는 Precision은 높았지만 과적합 경향이 보였습니다.<br>
-&nbsp;&nbsp;&nbsp;&nbsp;- XGBoost는 안정적이면서도 일반화 성능이 뛰어났습니다.<br>
-3. 해석 가능성<br>
-&nbsp;&nbsp;&nbsp;&nbsp;- XGBoost를 통해 Feature Importance를 분석하면 이탈 요인을 명확히 파악할 수 있습니다.<br>
+![하이퍼파라미터 튜닝 과정](./images/hyperparameter_tuning.png)
+> 주요 하이퍼파라미터별 성능 영향 분석
+
+### 3.3 교차 검증 결과
+| 폴드 | ROC-AUC | 정확도 | Recall | Precision |
+|------|---------|---------|---------|------------|
+| 1 | 0.8711 | 0.76 | 0.71 | 0.53 |
+| 2 | 0.8834 | 0.75 | 0.72 | 0.51 |
+| 3 | 0.8983 | 0.77 | 0.74 | 0.54 |
+| 4 | 0.8801 | 0.75 | 0.73 | 0.52 |
+| 5 | 0.8781 | 0.76 | 0.72 | 0.53 |
+| 평균 | 0.8822 | 0.76 | 0.72 | 0.53 |
+| 표준편차 | 0.0101 | 0.01 | 0.01 | 0.01 |
+
+![교차 검증 결과](./images/cross_validation_results.png)
+> 교차 검증 성능 분포 및 안정성 분석
 
 ---
 
-## Deep Learning
-### RNN Model
-1. RNN Model Create
-   <img src="https://github.com/SKNETWORKS-FAMILY-AICAMP/SKN07-2nd-3Team/blob/main/images/rnn_model_create.png" alt="rnn_model_create" width="900px">
+## 4. 결과 및 시사점
 
-2. Used to Prevent Overfitting
-![ prevent_overfitting ](https://github.com/SKNETWORKS-FAMILY-AICAMP/SKN07-2nd-3Team/blob/main/images/early%20stopping.png)
+### 4.1 모델 성능 최종 평가
+| 평가 지표 | 초기 모델 | 최종 모델 | 개선율 | 비고 |
+|-----------|------------|------------|---------|------|
+| 전체 정확도 | 0.80 | 0.75 | -6.25% | 의도된 trade-off |
+| ROC-AUC | 0.8336 | 0.8276 | -0.72% | 안정성 확보 |
+| 이탈고객 Recall | 0.52 | 0.73 | +40.38% | 큰 폭 개선 |
+| 이탈고객 Precision | 0.64 | 0.52 | -18.75% | 수용 가능 수준 |
+| F1-score | 0.57 | 0.61 | +7.02% | 전반적 개선 |
+| 과적합(차이) | - | 0.0541 | - | 안정적 수준 |
 
-3. Training Result
-![ training_result ](https://github.com/SKNETWORKS-FAMILY-AICAMP/SKN07-2nd-3Team/blob/main/images/training_result.png)
-  - Training during 34 epoch
+![최종 성능 평가](./images/final_performance_evaluation.png)
+> 주요 성능 지표의 개선 추이 및 trade-off 관계
 
-4. Loss Curve
-   <img src="https://github.com/SKNETWORKS-FAMILY-AICAMP/SKN07-2nd-3Team/blob/main/images/RNN_model_loss.png" alt="loss_curve" width="1100px">
+### 4.2 특성 중요도 최종 분석
+| 특성 | 초기 중요도 | 최종 중요도 | 변화 | 시사점 |
+|------|-------------|--------------|-------|---------|
+| 고객_위험도 | 0.2488 | 0.2848 | ⬆️ | 위험 예측력 향상 |
+| tenure | 0.2402 | 0.2258 | ⬇️ | 안정적 영향력 |
+| 서비스당_요금 | 0.2278 | 0.1904 | ⬇️ | 과적합 감소 |
+| MonthlyCharges | 0.1847 | 0.1664 | ⬇️ | 영향력 조정 |
+| 인터넷_서비스_등급 | 0.0684 | 0.0934 | ⬆️ | 중요성 부각 |
+| 총_서비스_수 | 0.0300 | 0.0392 | ⬆️ | 보조 지표화 |
 
-5. Learning Curve
-   <img src="https://github.com/SKNETWORKS-FAMILY-AICAMP/SKN07-2nd-3Team/blob/main/images/RNN_model_learning_curve.png" alt="learning_curve" width="1100px">
+![특성 중요도 변화](./images/feature_importance_changes.png)
+> 모델 발전 과정에서의 특성 중요도 변화 추이
 
-6. Evaluation
-   <img src="https://github.com/SKNETWORKS-FAMILY-AICAMP/SKN07-2nd-3Team/blob/main/images/RNN_model_evaluation.png" alt="rnn_model_evaluation" width="1100px">
+### 4.3 비즈니스 인사이트
+1. 고객 유지 전략
+   ```python
+   high_risk_segments = {
+       'contract': 'Month-to-month',
+       'payment': 'Electronic check',
+       'service': 'Fiber optic',
+       'tenure': '< 12 months'
+   }
+   ```
 
-### RNN 모델의 한계
-1. 성능 부족<br>
-&nbsp;&nbsp;&nbsp;&nbsp;- 정확도(Accuracy)가 88.9%로 나쁘지 않지만, Recall이 43.2%로 매우 낮습니다.<br>
-&nbsp;&nbsp;&nbsp;&nbsp;- 이는 이탈 고객을 제대로 예측하지 못하는 한계가 있음을 의미합니다.<br>
-2. F1 Score<br>
-&nbsp;&nbsp;&nbsp;&nbsp;- F1 Score가 0.526으로 낮아 Precision과 Recall의 균형이 부족합니다.<br>
-3. ROC-AUC<br>
-&nbsp;&nbsp;&nbsp;&nbsp;- ROC-AUC 점수가 0.698로, 다른 머신러닝 모델(XGBoost, Random Forest)에 비해 식별 능력이 떨어집니다.<br>
+2. 서비스 개선 우선순위
+   | 서비스 영역 | 현재 이탈률 | 개선 목표 | 주요 조치 |
+   |-------------|-------------|------------|-----------|
+   | Fiber optic | 41.9% | 30% | 품질 개선 |
+   | 전자 결제 | 45.3% | 25% | 시스템 안정화 |
+   | 부가 서비스 | 41.8% | 20% | 혜택 강화 |
 
-### XGBoost와의 비교
-&nbsp;&nbsp;&nbsp;&nbsp;- XGBoost는 모든 성능 지표에서 RNN보다 우수한 결과를 보였습니다.<br>
-&nbsp;&nbsp;&nbsp;&nbsp;- 특히 Recall과 ROC-AUC에서 큰 차이를 보이며, 이탈 고객 예측에 더 효과적입니다.<br>
-
-RNN은 딥러닝 모델로 적용되었지만, 성능과 효율성 면에서 부족했습니다.
-따라서 XGBoost가 최종 모델로 선정되었습니다.
+![서비스 개선 영향 예측](./images/service_improvement_impact.png)
+> 서비스 개선에 따른 이탈률 감소 시뮬레이션
 
 ---
 
-## 기술 스택
+## 5. 기술 스택 및 향후 계획
+
+### 5.1 개발 환경
+| 분야 | 도구 | 버전 | 용도 |
+|------|------|------|------|
+| 언어 | Python | 3.8+ | 전체 개발 |
+| ML | scikit-learn | 0.24.2 | 모델 개발 |
+| | imbalanced-learn | 0.8.1 | SMOTE 적용 |
+| 데이터 처리 | pandas | 1.3.3 | 데이터 전처리 |
+| | numpy | 1.21.2 | 수치 연산 |
+| 시각화 | matplotlib | 3.4.3 | 기본 시각화 |
+| | seaborn | 0.11.2 | 고급 시각화 |
+
+![개발 파이프라인](./images/development_pipeline.png)
+> 전체 개발 프로세스 및 도구 활용 흐름도
+
+### 5.2 향후 개선 로드맵
+| 단계 | 계획 | 우선순위 | 예상 효과 |
+|------|------|----------|------------|
+| 1단계 | 앙상블 모델 도입 | 높음 | 성능 향상 |
+| | 시계열 특성 추가 | 높음 | 예측력 개선 |
+| 2단계 | 실시간 예측 시스템 | 중간 | 운영 효율화 |
+| | 자동 모니터링 | 중간 | 안정성 확보 |
+| 3단계 | 딥러닝 모델 검토 | 낮음 | 잠재력 탐색 |
+
+![개선 로드맵](./images/improvement_roadmap.png)
+> 단계별 개선 계획 및 기대 효과
 
 ---
 
-## 이탈 예측 모델 구현
-사용자는 다양한 머신러닝 모델을 선택하고, CSV 파일을 업로드하여 이탈 예측 결과를 확인할 수 있습니다.
+## 📝 참고 자료
+- [데이터 전처리 상세 보고서](data_preprocessing_report.md)
+- [특성 선택 보고서](feature_selection_report.md)
+- [모델 평가 보고서](model_evaluation_report.md)
+- [코드 저장소](https://github.com/username/project)
 
-### 프로젝트 실행 과정
-1. CSV 파일 업로드<br>
-&nbsp;&nbsp;&nbsp;&nbsp;- 예측할 데이터셋을 업로드 합니다.<br>
-2. 모델 선택<br>
-&nbsp;&nbsp;&nbsp;&nbsp;- 사용자는 Decision Tree, Random Forest, XGBoost 등 다양한 모델 중 하나를 선택할 수 있습니다.<br>
-3. 이탈 예측 결과 확인<br>
-&nbsp;&nbsp;&nbsp;&nbsp;- 예측된 고객 이탈률과 이탈 예상 고객 수를 확인할 수 있습니다.<br>
+## 📊 시각화 자료
+- [./images/](./images/) 디렉토리에 모든 시각화 자료 저장
+- 주요 시각화:
+  * data_distribution.png
+  * feature_correlation.png
+  * model_performance_comparison.png
+  * feature_importance_changes.png
+  * service_improvement_impact.png
 
-<table> 
-  <tr> <td align="center"><b>CSV 파일 업로드</b></td> <td align="center"><b>모델 선택</b></td> <td align="center"><b>이탈 예측 결과</b></td> </tr> <tr> <td> <img src="https://github.com/SKNETWORKS-FAMILY-AICAMP/SKN07-2nd-3Team/blob/main/images/streamlit%2001.png" alt="Model Selection" width="300"> </td> <td> <img src="https://github.com/SKNETWORKS-FAMILY-AICAMP/SKN07-2nd-3Team/blob/main/images/streamlit%2002.png" alt="CSV File Upload" width="300"> </td> <td> <img src="https://github.com/SKNETWORKS-FAMILY-AICAMP/SKN07-2nd-3Team/blob/main/images/streamlit%2003.png" alt="Churn Prediction Results" width="300"> </td> </tr> 
-</table>
+
 
 --- 
 
