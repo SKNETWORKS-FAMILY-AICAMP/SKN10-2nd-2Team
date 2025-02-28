@@ -23,27 +23,30 @@ class ClassificationModels:
     elif self.model == 'catboost':
       return CatBoostClassifier(**kwargs)
     else:
-        raise ValueError("model : 'random_forest', 'xgboost', 'lightgbm', 'catboost")
+      raise ValueError("model : 'random_forest', 'xgboost', 'lightgbm', 'catboost")
   
-  def train(self, X_train, y_train):
-      self.model.fit(X_train, y_train)
+  def train(self, feature, target):
+      self.model.fit(feature, target)
   
-  def predict(self, X_test):
-      return self.model.predict(X_test)
+  def predict(self, X):
+    return self.model.predict(X)
   
-  def predict_proba(self, X_test):
-      return self.model.predict_proba(X_test)
+  def predict_proba(self, X):
+    return self.model.predict_proba(X)
+
+  def threshold_pred(self, X, threshold = 0.5):
+    return self.model.predict_proba(X)[:, 1] > threshold
   
   def get_model(self):
-      return self.model
+    return self.model
   
-  def save_model(self, root:Path = Path('/models')):
-      joblib.dump(self.model, root)
+  def save_model(self, root:Path = Path('/models'), ):
+    joblib.dump(self.model, root / self.model)
 
   def load_model(self, root:Path = Path('/models')):
-        self.model = joblib.load(root)
+    self.model = joblib.load(root / self.model)
 
 # 모델을 불러와서 예측하는 코드
-def data_pred(data, root:Path = Path('/models')):
-    model = joblib.load(root)
+def data_pred(data, root:Path = Path('/models'), model_name:str = 'randomforest'):
+    model = joblib.load(root / model_name)
     return  model.predict(data)
