@@ -208,8 +208,7 @@ def main():
         with st.form("prediction_form"):
             # 연령
             st.write("#### 연령")
-            age = st.slider("", 18, 100, 55, key="age")
-            
+            age = st.text_input("연령", key="age")
             # 휴대폰 가입 여부
             st.write("#### 휴대폰 가입 여부")
             phone_subscription = st.selectbox("", ["Yes", "No"], key="phone")
@@ -245,21 +244,28 @@ def main():
                 
                 # 예측 수행
                 from service.input_pred import tenure_predict
-                result = tenure_predict(input=input_data)
+                result = tenure_predict(input=input_data,
+                                        model_name='best_randomforestclassifier_grid.pkl') 
+                                        # todo: model_name 변경
                 
                 # 예측 결과 표시
                 st.success("예측이 완료되었습니다!")
                 
-                # 이탈 예측 결과 메시지
-                st.error(result)  # "위 사용자는 12 개월 이후 이탈할 것으로 예측됩니다" 등의 메시지
-                
+                # 이탈 예측 결과 메시지 - 더 크고 눈에 띄게 표시
+                st.markdown(f"""
+                <div style="background-color: #FF5252; padding: 20px; border-radius: 10px; margin: 20px 0;">
+                    <h2 style="color: white; text-align: center; margin: 0;">{result}</h2>
+                </div>
+                """, unsafe_allow_html=True)
+
                 # 추가 정보 표시
-                col1, col2 = st.columns(2)
-                with col1:
-                    st.metric("이탈 확률", "78%")
-                with col2:
-                    st.metric("위험도", "높음")
+                # col1, col2 = st.columns(2)
+                # with col1:
+                #     st.metric("이탈 확률", "78%")
+                # with col2:
+                #     st.metric("위험도", "높음")
                 
+                # todo: 주요 이탈 위험 요인 추가
                 st.info("""
                 #### 주요 이탈 위험 요인:
                 - 다중회선 미사용

@@ -9,6 +9,7 @@ from catboost import CatBoostClassifier
 import joblib
 
 from service.utils import reset_seeds
+from service.utils import reset_seeds
 
 class ClassificationModels:
   def __init__(self, model:str='random_forest', **kwargs):
@@ -59,6 +60,6 @@ class ClassificationModels:
   #   self.model = joblib.load(root / self.model)
 
 # 모델을 불러와서 예측하는 코드
-def data_pred(data, root:Path = Path('service/models'), model_name:str = 'rf.pkl'):
+def data_pred(data, root:Path = Path('models'), model_name:str = 'rf.pkl'):
     model = joblib.load(root / model_name)
     return  model.predict(data)
