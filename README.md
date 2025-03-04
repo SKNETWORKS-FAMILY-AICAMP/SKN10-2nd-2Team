@@ -1,6 +1,15 @@
 # SKN10-2nd-2Team
-# [가입 고객 이탈 예측](https://www.kaggle.com/code/bbksjdd/telco-customer-churn)
+# 통신사 고객 이탈 예측 모델 개발 
+<img width="1066" alt="Screenshot 2025-03-04 at 2 13 13 PM" src="https://github.com/user-attachments/assets/a9ea819c-1998-4d74-bb36-6b3cc5f977f9" />
+<img width="1067" alt="Screenshot 2025-03-04 at 2 13 59 PM" src="https://github.com/user-attachments/assets/b3fda6ad-b002-4844-b92c-5b6de9bba23d" />
 
+## 프로젝트 개요
+통신사 고객 데이터를 활용하여 고객 이탈을 예측하고, 이탈 가능성이 높은 고객을 조기에 식별하여 선제적인 대응을 가능하게 하는 예측 모델 개발
+
+## 프로젝트 목표
+- 고객 이탈 예측 모델 개발 및 성능 최적화
+- 주요 이탈 요인 분석 및 인사이트 도출
+- 실시간 이탈 예측이 가능한 웹 애플리케이션 개발
 
 
 # 
@@ -14,7 +23,6 @@
     <th>신민주</th>
     <th>조현정</th>
     <th>전서빈</th>
-
   </tr>
   <tr>
     <td><img src="https://github.com/SKNETWORKS-FAMILY-AICAMP/SKN07-2nd-3Team/blob/main/images/%EC%9D%B8%ED%98%95.png" width="175" height="175"></td>
@@ -23,8 +31,6 @@
     <td><img src="https://github.com/SKNETWORKS-FAMILY-AICAMP/SKN07-2nd-3Team/blob/main/images/baby.jpg" width="175" height="175"></td>
     <td><img src="https://github.com/SKNETWORKS-FAMILY-AICAMP/SKN07-2nd-3Team/blob/main/images/%EB%8F%99%EC%9D%B5.jpg" width="175" height="175"></td>
     <td><img src="https://github.com/SKNETWORKS-FAMILY-AICAMP/SKN07-2nd-3Team/blob/main/images/%EB%8F%99%EC%9D%B5.jpg" width="175" height="175"></td>
-
-
   </tr>
   <tr>
     <th>팀장</th>
@@ -33,14 +39,45 @@
     <th>팀원</th>
     <th>팀원</th>
     <th>팀원</th>
- 
+  </tr>
+  <tr>
+    <th> 
+      <b>프로젝트 총괄</b><br>
+      <b>데이터 분석</b><br>
+      <b>모델 평가</b>
+    </th>
+    <th>
+      <b>RF 모델 개발</b><br>
+      <b>화면 개발</b><br>
+      <b>GitHub 업데이트</b>
+    </th>
+    <th>
+      <b>XGBoost 모델 개발</b><br>
+      <b>성능 분석</b><br>
+      <b>화면 설계</b>
+    </th>
+    <th>
+      <b>ExtraTree 모델 개발</b><br>
+      <b>성능 분석</b><br>
+      <b>모듈화</b>
+    </th>
+    <th>
+      <b>LightGBM 모델 개발</b><br>
+      <b>성능 분석</b><br>
+      <b>화면 개발</b>
+    </th>
+    <th>
+      <b>SVM 모델 개발</b><br>
+      <b>성능 분석</b><br>
+      <b>화면 개발</b>
+    </th>
   </tr>
 </table>
 
+
 ---
 
-# 통신사 고객 이탈 예측 모델 개발 보고서
----
+
 
 ## 📊 목차
 1. [데이터 분석 및 전처리](#1-데이터-분석-및-전처리)
@@ -70,20 +107,23 @@
 | 서비스 유형 | Fiber optic<br>DSL<br>미사용 | 41.9%<br>19.0%<br>7.4% | 44.0%<br>34.4%<br>21.6% |
 | 결제 방식 | Electronic check<br>Mailed check<br>Bank transfer<br>Credit card | 45.3%<br>19.1%<br>16.7%<br>15.2% | 33.6%<br>23.2%<br>21.8%<br>21.4% |
 
-![image](https://github.com/user-attachments/assets/108532b5-05f8-4a35-95f8-8082c80dcfb8)
-![image](https://github.com/user-attachments/assets/69b92809-52ec-4d82-bf04-28c92a629375)
-![image](https://github.com/user-attachments/assets/6f56f1f3-e178-46a2-a4f3-e6260d725c49)
-> 주요 요인별 이탈률 비교 및 분석
+## 인구통계학적 특성 별 이탈율
+![image](https://github.com/user-attachments/assets/f3702d32-cc05-49c1-b22d-ba7c9fa9b001)
+
+## 서비스 별 이탈율
+![image](https://github.com/user-attachments/assets/b46f8c03-a29b-4ead-b4fd-15f8ee27f7b9)
+
+## 주요 요인별 이탈률 비교 및 분석
+![image](https://github.com/user-attachments/assets/d65a54b5-efd6-4293-9c60-ef03c9ff2c32)
 
 ### 1.3 결측치 처리
 
 ~~~python
-TotalCharges 결측치 처리
-df.loc[df['TotalCharges'].isna(), 'TotalCharges'] = \
-df.loc[df['TotalCharges'].isna(), 'MonthlyCharges']
+TotalCharges 결측치 처리 -> 중앙값으로 대체
+median_total_charges = df['TotalCharges'].median()
+df['TotalCharges'].fillna(median_total_charges, inplace=True)
 ~~~
-![image](https://github.com/user-attachments/assets/12bf96ab-becb-4964-9dc0-b486dd47a668)
-> 결측치 처리 전후의 TotalCharges 분포 비교
+
 
 ---
 
@@ -100,7 +140,6 @@ df.loc[df['TotalCharges'].isna(), 'MonthlyCharges']
 | | 서비스당_요금 | `monthly / total_services` | 서비스 효율성 |
 
 ![image](https://github.com/user-attachments/assets/f7d0244b-1415-466f-aee5-22be149fd66f)
-![image](https://github.com/user-attachments/assets/e1f5a55e-3b3c-4b4d-9cd6-d206fc5721fa)
 
 > 개발된 특성들 간의 상관관계 분석
 
@@ -123,28 +162,26 @@ df.loc[df['TotalCharges'].isna(), 'MonthlyCharges']
 ## 3. 모델 개발 과정
 
 ### 3.1 모델 발전 과정
-| 모델 | 정확도 | ROC-AUC | 이탈고객<br>Recall | 이탈고객<br>Precision | F1-score | 과적합<br>(차이) |
-|------|---------|----------|-------------------|---------------------|-----------|----------------|
-| Base | 0.80 | 0.8336 | 0.52 | 0.64 | 0.57 | - |
-| SMOTE | 0.75 | 0.8279 | 0.74 | 0.52 | 0.61 | - |
-| Tuned | 0.74 | 0.8017 | 0.64 | 0.51 | 0.57 | 0.0934 |
-| Tuned V2 | 0.75 | 0.8276 | 0.73 | 0.52 | 0.61 | 0.0541 |
+| 모델 | 정확도 | ROC-AUC | 이탈고객<br>Recall | 이탈고객<br>Precision | F1-score |
+|---------------|--------|--------|--------|--------|--------|
+| Random Forest | 0.7818 | 0.8303 | 0.6328 | 0.5820 | 0.6063 |
+| XGBoost | 0.7766 | 0.8228 | 0.5330 | 0.5874 | 0.5589 | 
+| LightGBM | 0.7738 | 0.8185| 0.5740 | 0.5740 | 0.5740 | 
+| SVM | 0.74 | 0.8017 | 0.64 | 0.51 | 0.57 | 0.0934 |
+| Extra Tree | 0.75 | 0.8276 | 0.73 | 0.52 | 0.61 | 0.0541 |
+| CatBoost | 0.7841 | 0.7170 | 0.5739 | 0.5974 | 0.5854 |
 
-![모델 성능 비교](./images/model_performance_comparison.png)
+![image](https://github.com/user-attachments/assets/882746cc-75d7-4428-9af2-9d0093d14bad)
+
 > 각 모델별 주요 성능 지표 비교
 
 ### 3.2 하이퍼파라미터 최적화
-python
-최종 모델 파라미터
-final_params = {
-'n_estimators': 400,
-'max_depth': 10,
-'min_samples_split': 5,
-'min_samples_leaf': 2,
-'max_features': 'sqrt',
-'class_weight': 'balanced'
-}
-
+| 파라미터 | 값 |
+|----------|-----|
+| max_depth | 11 |
+| max_features | log2 |
+| min_samples_split | 3 |
+| n_estimators | 700 |
 
 ![하이퍼파라미터 튜닝 과정](./images/hyperparameter_tuning.png)
 > 주요 하이퍼파라미터별 성능 영향 분석
