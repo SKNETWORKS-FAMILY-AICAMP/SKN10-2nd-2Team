@@ -104,7 +104,7 @@ def input_mode(data: pd.DataFrame, train_mode: bool = True, apply_smote: bool = 
             X, y, test_size=0.3, random_state=42, stratify=y, shuffle=True
         )
 
-        # 🔥 데이터 타입을 float으로 변환 (SMOTE와 XGBoost 오류 방지)
+        #  데이터 타입을 float으로 변환 (SMOTE와 XGBoost 오류 방지)
         X_train = X_train.astype(float)
         X_test = X_test.astype(float)
 
