@@ -218,8 +218,7 @@ df['TotalCharges'].fillna(median_total_charges, inplace=True)
 | 시각화 | matplotlib | 3.4.3 | 기본 시각화 |
 | | seaborn | 0.11.2 | 고급 시각화 |
 
-![개발 파이프라인](./images/development_pipeline.png)
-> 전체 개발 프로세스 및 도구 활용 흐름도
+
 
 ### 5.2 향후 개선 로드맵
 | 단계 | 계획 | 우선순위 | 예상 효과 |
@@ -230,8 +229,6 @@ df['TotalCharges'].fillna(median_total_charges, inplace=True)
 | | 자동 모니터링 | 중간 | 안정성 확보 |
 | 3단계 | 딥러닝 모델 검토 | 낮음 | 잠재력 탐색 |
 
-![개선 로드맵](./images/improvement_roadmap.png)
-> 단계별 개선 계획 및 기대 효과
 
 ---
 
