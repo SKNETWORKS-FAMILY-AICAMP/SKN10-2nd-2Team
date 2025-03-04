@@ -6,6 +6,7 @@ from sklearn.ensemble import RandomForestClassifier
 from xgboost import XGBClassifier
 from lightgbm import LGBMClassifier
 from catboost import CatBoostClassifier
+from sklearn.ensemble import ExtraTreesClassifier
 import joblib
 
 from utils import reset_seeds
@@ -26,8 +27,10 @@ class ClassificationModels:
       return LGBMClassifier(**kwargs)
     elif self.model == 'catboost':
       return CatBoostClassifier(**kwargs)
+    elif self.model == 'extratrees':
+      return ExtraTreesClassifier(**kwargs)
     else:
-      raise ValueError("model : 'random_forest', 'xgboost', 'lightgbm', 'catboost")
+      raise ValueError("model : 'random_forest', 'xgboost', 'lightgbm', 'catboost', 'extratrees'")
   
   # 학습하기 위한 함수
   @reset_seeds
