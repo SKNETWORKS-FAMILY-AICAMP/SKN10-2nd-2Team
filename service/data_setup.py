@@ -4,8 +4,9 @@ import pandas as pd
 
 from sklearn.model_selection import train_test_split
 from imblearn.over_sampling import SMOTE
+import sys
 
-def data_loader(root: str, filename: str) -> pd.DataFrame:
+def data_loader(root: str='./.data', filename: str='WA_Fn-UseC_-Telco-Customer-Churn.csv') -> pd.DataFrame:
   '''
   입력변수 : root, filename
   root에서 csv파일을 불러와서 DataFrame형태로 return하는 함수
@@ -28,8 +29,8 @@ def data_preprocessing(data: pd.DataFrame) -> pd.DataFrame:
 
   # 2) 결측치 처리 (TotalCharges -> numeric 변환 후 중앙값 대체)
   data['TotalCharges'] = pd.to_numeric(data['TotalCharges'], errors='coerce')
-  data['TotalCharges'].fillna(data['TotalCharges'].median(), inplace=True)
-
+  data.fillna({'TotalCharges': data['TotalCharges'].median()}, inplace=True)
+  
   # 3) tenure 그룹화
   data['tenure_group'] = pd.cut(
     data['tenure'],
@@ -63,7 +64,8 @@ def data_preprocessing(data: pd.DataFrame) -> pd.DataFrame:
   for col in binary_cols:
     if col in data.columns:
       data[col] = data[col].map({'Yes': 1, 'No': 0})
-      data[col].fillna(0, inplace=True)
+      data.fillna({col: 0}, inplace=True)
+      data[col] = data[col].astype(int)
 
   # 9) 서비스 관련 변수 합산 (MultipleLines, OnlineSecurity 등)
   # internet_service_cols = [
@@ -82,7 +84,7 @@ def data_preprocessing(data: pd.DataFrame) -> pd.DataFrame:
     if col in data.columns:
       data.drop(columns=col, inplace=True)
 
-    return data
+  return data
 
 def input_mode(data: pd.DataFrame, train_mode: bool = True, target = None):
   '''
