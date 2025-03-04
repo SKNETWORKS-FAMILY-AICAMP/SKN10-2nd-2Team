@@ -38,7 +38,7 @@ def data_preprocessing(data: pd.DataFrame) -> pd.DataFrame:
     include_lowest=True
     )
   # 범위 밖(결측치 등)을 5로 채우기
-  data['tenure_group'] = data['tenure_group'].astype(str).fillna('5')
+  data['tenure_group'] = data['tenure_group'].astype(int).fillna('5')
 
   # 4) 요금 관련 변수 추가
   data['ChargesRatio'] = data['TotalCharges'] / (data['MonthlyCharges'] + 1)

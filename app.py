@@ -1,25 +1,11 @@
 import streamlit as st
 import pandas as pd
-<<<<<<< HEAD
-
-# 세팅
-st.set_page_config(
-    page_title = "가입 고객 이탈 예측",
-    layout = "wide",
-    initial_sidebar_state = "expanded"
-)
-
-def main():
-  st.title('메인 페이지 제목')
-  st.divider()
-
-if __name__ == '__main__':
-  main()
-=======
 import numpy as np
 
 import matplotlib.pyplot as plt
 import seaborn as sns
+
+from service.data_setup import data_loader
 
 def main():
     # 페이지 설정
@@ -239,14 +225,11 @@ def main():
             # 이용하고 있는 서비스 선택
             st.write("#### 이용하고 있는 서비스 선택")
             services = st.multiselect("",
-                                    ["OnlineSecurity", "OnlineBackup", "DeviceProtection", 
-                                     "TechSupport", "StreamingTV", "StreamingMovies"],
+                                    ["OnlineSecurity", "OnlineBackup", "DeviceProtection", "TechSupport", "StreamingTV", "StreamingMovies"],
                                     default=["OnlineSecurity"])
             
             # 예측하기 버튼
-            predict_button = st.form_submit_button("예측하기", 
-                                                 type="primary",
-                                                 use_container_width=True)
+            predict_button = st.form_submit_button("예측하기", type="primary", use_container_width=True)
             
             if predict_button:
                 # input_pred.py의 tenure_predict 함수에 전달할 입력 데이터 구성
@@ -288,7 +271,7 @@ def show_data_analysis():
     st.header("📊 데이터 분석")
     
     # 데이터 로드
-    X_train, X_test, y_train, y_test, df = load_and_preprocess_data()
+    df = data_loader()
     
     # 기본 통계
     st.subheader("기본 통계")
@@ -396,5 +379,4 @@ def show_prediction():
             st.write("- Electronic check 결제")
 
 if __name__ == "__main__":
-    main() 
->>>>>>> origin/feature-phjoon
+    main()
