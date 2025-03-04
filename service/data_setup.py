@@ -66,11 +66,11 @@ def data_preprocessing(data: pd.DataFrame) -> pd.DataFrame:
       data[col].fillna(0, inplace=True)
 
   # 9) 서비스 관련 변수 합산 (MultipleLines, OnlineSecurity 등)
-  service_cols = [
-    "MultipleLines", "OnlineSecurity", "OnlineBackup",
-    "DeviceProtection", "TechSupport", "StreamingTV", "StreamingMovies"
-    ]
-  data['TotalServices'] = data[service_cols].sum(axis=1)
+  # internet_service_cols = [
+  #   "OnlineSecurity", "OnlineBackup",
+  #   "DeviceProtection", "TechSupport", "StreamingTV", "StreamingMovies"
+  #   ]
+  # data['TotalServices'] = data[internet_service_cols].sum(axis=1)
 
   # 10) 타겟 변수 변환 (Churn -> 0/1)
   if 'Churn' in data.columns:
@@ -84,7 +84,7 @@ def data_preprocessing(data: pd.DataFrame) -> pd.DataFrame:
 
     return data
 
-def input_mode(data: pd.DataFrame, train_mode: bool = True):
+def input_mode(data: pd.DataFrame, train_mode: bool = True, target = None):
   '''
   입력변수 : data(DataFrame), train_mode(boolean)
   1. train_mode가 True일 경우
@@ -97,12 +97,12 @@ def input_mode(data: pd.DataFrame, train_mode: bool = True):
   '''
   if train_mode:
         # 예: 'target' 컬럼을 타겟으로 가정 (실제 프로젝트에 맞게 수정)
-        if 'target' not in data.columns:
-            raise ValueError("DataFrame에 'target' 컬럼이 존재하지 않습니다. 타겟 컬럼명을 확인하세요.")
+        if target not in data.columns:
+            raise ValueError(f"DataFrame에 {target} 컬럼이 존재하지 않습니다. 타겟 컬럼명을 확인하세요.")
 
         # X, y 분리
-        X = data.drop(columns=['target'])
-        y = data['target']
+        X = data.drop(columns=[target])
+        y = data[target]
 
         # 7:3으로 데이터 분할
         X_train, X_test, y_train, y_test = train_test_split(

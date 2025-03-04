@@ -50,15 +50,15 @@ class ClassificationModels:
   def get_model(self):
     return self.model
   
-  # 모델 저장학기 위한 함수
-  def save_model(self, root:Path = Path('/models'), ):
-    joblib.dump(self.model, root / self.model)
+  # 모델 저장하기 위한 함수
+  # def save_model(self, root:Path = Path('service/models')):
+  #   joblib.dump(self.model, root / self.model)
 
-  # 모델 불러오기 위한 함수
-  def load_model(self, root:Path = Path('/models')):
-    self.model = joblib.load(root / self.model)
+  # # 모델 불러오기 위한 함수
+  # def load_model(self, root:Path = Path('service/models')):
+  #   self.model = joblib.load(root / self.model)
 
 # 모델을 불러와서 예측하는 코드
-def data_pred(data, root:Path = Path('/models'), model_name:str = 'randomforest'):
+def data_pred(data, root:Path = Path('service/models'), model_name:str = 'randomforest'):
     model = joblib.load(root / model_name)
     return  model.predict(data)
