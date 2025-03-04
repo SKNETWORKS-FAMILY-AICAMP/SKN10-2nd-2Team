@@ -16,12 +16,27 @@ streamlit 페이지에서 데이터를 받아 저장된 모델을 이용하여 �
 '''
 import numpy as np
 import pandas as pd
+import os
 from pathlib import Path
 
-from data_setup import data_loader, data_preprocessing
-from models import data_pred
+from service.data_setup import data_loader, data_preprocessing
+from service.models import data_pred
 
-df = pd.read_csv('../.data/WA_Fn-UseC_-Telco-Customer-Churn.csv')
+# Use a more reliable path construction
+current_dir = os.path.dirname(os.path.abspath(__file__))
+project_root = os.path.dirname(current_dir)
+data_path = os.path.join(project_root, 'data', 'WA_Fn-UseC_-Telco-Customer-Churn.csv')
+
+# Try to load the data, with a fallback
+try:
+    df = pd.read_csv(data_path)
+except FileNotFoundError:
+    # Fallback to alternative location
+    try:
+        df = pd.read_csv(os.path.join(project_root, '.data', 'WA_Fn-UseC_-Telco-Customer-Churn.csv'))
+    except FileNotFoundError:
+        # Use data_loader as a last resort
+        df = data_loader('./data', 'WA_Fn-UseC_-Telco-Customer-Churn.csv')
 
 def __MonthlyCharges_Contract(data:pd.DataFrame = data_loader(), **kwargs):
   service_list = [
@@ -47,28 +62,37 @@ def __MonthlyCharges_Contract(data:pd.DataFrame = data_loader(), **kwargs):
   return MonthlyCharges_df
 
 def __input_make_dataframe(input:dict) -> pd.DataFrame:
-  # input(dict : 임시)을 통해 데이터 df의 각 column에 대한 값 채워넣을 것
+  # 모든 컬럼에 대해 적절한 기본값으로 DataFrame 초기화
   df = pd.DataFrame({
-    'customID' : [0],
-    'gender' : [0],
-    'SeniorCitizen' : [0],
-    'Partner' : [0],
-    'Dependents' : [0],
-    'tenure' : [0],
-    'PhoneService' : [0],
-    'MultipleLines' : [0],
-    'InternetService' : [0],
-    'OnlineSecurity' : [0],
-    'OnlineBackup' : [0],
-    'DeviceProtection' : [0],
-    'TechSupport' : [0],
-    'StreamingTV' : [0],
-    'StreamingMovies' : [0],
-    'Contract' : [0],
-    'PaperlessBilling' : [0],
-    'MonthlyCharges' : [0],
-    'TotalCharges' : [0]
+    # 식별자 컬럼 (기본값: 0 또는 빈 문자열)
+    'customID': [''],
+    'gender': ['Male'],  # 기본값: 남성
+    
+    # 이진 특성 컬럼 (기본값: 'No')
+    'SeniorCitizen': [0],  # 0: 아니오, 1: 예
+    'Partner': ['No'],
+    'Dependents': ['No'],
+    'PhoneService': ['No'],
+    'MultipleLines': ['No'],
+    'OnlineSecurity': ['No'],
+    'OnlineBackup': ['No'],
+    'DeviceProtection': ['No'],
+    'TechSupport': ['No'],
+    'StreamingTV': ['No'],
+    'StreamingMovies': ['No'],
+    'PaperlessBilling': ['No'],
+    
+    # 범주형 컬럼 (기본값: 가장 일반적인 값)
+    'InternetService': ['DSL'],
+    'Contract': ['Month-to-month'],
+    'PaymentMethod': ['Electronic check'],
+    
+    # 수치형 컬럼 (기본값: 0)
+    'tenure': [0],
+    'MonthlyCharges': [0.0],
+    'TotalCharges': [0.0]
   })
+  
   service_list = [
       'MultipleLines',
       'InternetService',
@@ -78,14 +102,90 @@ def __input_make_dataframe(input:dict) -> pd.DataFrame:
       'TechSupport',
       'StreamingTV',
       'StreamingMovies']
-  df.loc[0, 'MonthlyCharges'] = __MonthlyCharges_Contract()[list(df.loc[0, service_list].values)]
+  
+  # 입력 데이터에서 값 설정 (입력된 값만 덮어씀)
+  # 추가 필드 설정
+  if 'payment_method' in input:
+    df.loc[0, 'PaymentMethod'] = str(input['payment_method'])
+  
+  if 'paperless_billing' in input:
+    # Yes/No 형식으로 변환
+    paperless_value = str(input['paperless_billing']).strip()
+    if paperless_value.lower() in ['yes', 'true', '1', 'y']:
+      df.loc[0, 'PaperlessBilling'] = 'Yes'
+    elif paperless_value.lower() in ['no', 'false', '0', 'n']:
+      df.loc[0, 'PaperlessBilling'] = 'No'
+  
+  # 나이를 SeniorCitizen으로 변환 (65세 이상이면 1, 아니면 0)
+  if 'age' in input:
+    try:
+      # 문자열이나 다른 타입으로 들어온 경우 정수로 변환
+      age_value = int(input['age'])
+      df.loc[0, 'SeniorCitizen'] = 1 if age_value >= 65 else 0
+    except (ValueError, TypeError):
+      # 변환할 수 없는 경우 기본값 사용
+      print(f"Warning: Invalid age value '{input['age']}', using default value")
+      df.loc[0, 'SeniorCitizen'] = 0
+  
+  # 전화 서비스 설정
+  if 'phone_subscription' in input:
+    # Boolean 또는 문자열을 Yes/No로 변환
+    phone_value = input['phone_subscription']
+    if isinstance(phone_value, bool):
+      df.loc[0, 'PhoneService'] = 'Yes' if phone_value else 'No'
+    else:
+      # 문자열이나 다른 값인 경우
+      phone_str = str(phone_value).strip().lower()
+      if phone_str in ['yes', 'true', '1', 'y']:
+        df.loc[0, 'PhoneService'] = 'Yes'
+      elif phone_str in ['no', 'false', '0', 'n']:
+        df.loc[0, 'PhoneService'] = 'No'
+  
+  # 인터넷 서비스 설정
+  if 'internet_type' in input:
+    df.loc[0, 'InternetService'] = str(input['internet_type'])
+  
+  # 멀티라인 설정
+  if 'multiple_lines' in input:
+    df.loc[0, 'MultipleLines'] = str(input['multiple_lines'])
+  
+  # 서비스 설정
+  if 'services' in input:
+    # 문자열인 경우 리스트로 변환 (쉼표로 구분된 문자열 처리)
+    services = input['services']
+    if isinstance(services, str):
+      services = [s.strip() for s in services.split(',')]
+    
+    if isinstance(services, list):
+      for service in services:
+        service_str = str(service).strip()
+        if service_str in service_list:
+          df.loc[0, service_str] = 'Yes'
+  
+  # Then calculate MonthlyCharges using the service values
+  # Create a tuple of service values to use as an index
+  service_values = tuple(df.loc[0, service_list].values)
+  
+  # Get the MonthlyCharges from the pivot table
+  monthly_charges_data = __MonthlyCharges_Contract()
+  
+  # Use a try-except block to handle potential KeyError
+  try:
+    df.loc[0, 'MonthlyCharges'] = monthly_charges_data.loc[service_values]
+  except KeyError:
+    # Fallback to a default value or mean if the exact combination doesn't exist
+    df.loc[0, 'MonthlyCharges'] = monthly_charges_data.mean()
 
+  # 먼저 DataFrame을 61개 행으로 확장합니다
+  # 기존 DataFrame을 복사하여 61개 행으로 확장
+  df_expanded = pd.DataFrame([df.iloc[0].tolist()] * 61, columns=df.columns)
+  
+  # 확장된 DataFrame에 tenure와 TotalCharges 값을 설정
   for r in range(0, 61):
-    df.iloc[r, :] = df.iloc[0]
-    df.loc[r, 'tenure'] = r
-    df.loc[r, 'TotalCharges'] = r * df.loc[r, 'MonthlyCharges']
+    df_expanded.loc[r, 'tenure'] = r
+    df_expanded.loc[r, 'TotalCharges'] = r * df_expanded.loc[r, 'MonthlyCharges']
 
-  return df
+  return df_expanded
 
 def __input_preprocessing(input:dict) -> pd.DataFrame:
   df = data_preprocessing(__input_make_dataframe(input = input))
@@ -104,8 +204,9 @@ def __input_preprocessing(input:dict) -> pd.DataFrame:
   df = df[transpose_column]
   return df
 
-def tenure_predict(input:dict, root:Path = Path('/models'), model_name = 'randomforest'):
-  pred = data_pred(data = __input_preprocessing(input = input), root = root, model_name = model_name)
+def tenure_predict(input:dict, root:Path = Path('./models'), model_name = 'randomforest'):
+  pred = data_pred(data = __input_preprocessing(input = input), 
+                  root = root, model_name = model_name)
   for month in range(len(pred) - 1):
     if pred[month] != pred[month + 1]:
       break

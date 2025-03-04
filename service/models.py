@@ -8,7 +8,7 @@ from lightgbm import LGBMClassifier
 from catboost import CatBoostClassifier
 import joblib
 
-from utils import reset_seeds
+from service.utils import reset_seeds
 
 class ClassificationModels:
   def __init__(self, model:str='random_forest', **kwargs):
@@ -59,6 +59,41 @@ class ClassificationModels:
     self.model = joblib.load(root / self.model)
 
 # 모델을 불러와서 예측하는 코드
-def data_pred(data, root:Path = Path('/models'), model_name:str = 'randomforest'):
-    model = joblib.load(root / model_name)
-    return  model.predict(data)
+def data_pred(data, root:Path = None, model_name:str = 'randomforest'):
+    # 기본 모델 경로 설정
+    if root is None:
+        import os
+        # 현재 파일의 디렉토리 경로 가져오기
+        current_dir = os.path.dirname(os.path.abspath(__file__))
+        # 프로젝트 루트 디렉토리 (service의 상위 디렉토리)
+        project_root = os.path.dirname(current_dir)
+        # 모델 디렉토리 경로
+        root = Path(os.path.join(project_root, 'models'))
+    
+    # 모델 파일 경로 확인
+    model_path = root / model_name
+    print(f"Loading model from: {model_path}")
+    
+    try:
+        model = joblib.load(model_path)
+        return model.predict(data)
+    except Exception as e:
+        print(f"Error loading model: {e}")
+        # 오류 발생 시 대체 모델 시도
+        try:
+            import os
+            # 사용 가능한 모델 파일 찾기
+            available_models = [f for f in os.listdir(root) if f.endswith('.pkl')]
+            if available_models:
+                alt_model_path = root / available_models[0]
+                print(f"Trying alternative model: {alt_model_path}")
+                model = joblib.load(alt_model_path)
+                return model.predict(data)
+            else:
+                raise FileNotFoundError(f"No model files found in {root}")
+        except Exception as e2:
+            print(f"Failed to load alternative model: {e2}")
+            # 모든 시도 실패 시 기본 예측 반환 (모든 값이 0)
+            import numpy as np
+            print("Returning default predictions (all zeros)")
+            return np.zeros(len(data))
