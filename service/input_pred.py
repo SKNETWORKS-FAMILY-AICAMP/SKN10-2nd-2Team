@@ -18,8 +18,8 @@ import numpy as np
 import pandas as pd
 from pathlib import Path
 
-from data_setup import data_loader, data_preprocessing
-from models import data_pred
+from service.data_setup import data_loader, data_preprocessing
+from service.models import data_pred
 
 df = pd.read_csv('../.data/WA_Fn-UseC_-Telco-Customer-Churn.csv')
 

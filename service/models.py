@@ -8,7 +8,7 @@ from lightgbm import LGBMClassifier
 from catboost import CatBoostClassifier
 import joblib
 
-from utils import reset_seeds
+from service.utils import reset_seeds
 
 class ClassificationModels:
   def __init__(self, model:str='random_forest', **kwargs):
