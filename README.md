@@ -242,4 +242,4 @@ df['TotalCharges'].fillna(median_total_charges, inplace=True)
 - 전서빈:
 - 정소열:
 - 조현정:
-- 신민주:
+- 신민주: 좋은 팀을 만나서 해보고싶은 역할을 담당할 수 있었고 전처리부터 모델링 과정까지 경험할 수 있어서 좋았습니다.
