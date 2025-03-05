@@ -202,7 +202,7 @@ def main():
             """)
     
     else:
-        st.header("이탈 가능성 예측 프로그램")
+        st.header("이탈 시점 예측 프로그램")
         # 딕셔너리 정리
         # 계약 기간
         contract_dict = {
