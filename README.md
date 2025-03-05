@@ -197,6 +197,7 @@ df['TotalCharges'].fillna(median_total_charges, inplace=True)
 
 ### 인자값 받기
 <img width="1317" alt="Screenshot 2025-03-05 at 9 53 16 AM" src="https://github.com/user-attachments/assets/618ef5a9-5c4d-4e0d-a74e-0d229cd06f40"/>
+
 ### 모델을 활용한 이탈예측
 <img width="1316" alt="Screenshot 2025-03-05 at 9 53 33 AM" 
      src="https://github.com/user-attachments/assets/d95c5152-a2d4-43b4-baae-f3b648cf5896"  
