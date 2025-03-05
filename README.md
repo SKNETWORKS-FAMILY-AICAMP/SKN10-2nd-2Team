@@ -121,10 +121,10 @@
 - 전자수표(Electronic check) 사용자의 이탈률이 가장 높음
 - 자동이체(Credit Card, Bank Transfer) 사용자들은 이탈률 낮음
 ➡ 자동이체 가입 유도 필요
-#### 인구통계학적 특성 별 이탈율
+#### 인구통계학적 특성 별 이탈률
 ![image](https://github.com/user-attachments/assets/f3702d32-cc05-49c1-b22d-ba7c9fa9b001)
 - SeniorCitizen (고령자): (고령일수록 이탈 가능성 조금 높음)
-#### 서비스 별 이탈율
+#### 서비스 별 이탈률
 ![image](https://github.com/user-attachments/assets/b46f8c03-a29b-4ead-b4fd-15f8ee27f7b9)
 
 #### 주요 요인별 이탈률 비교 및 분석
