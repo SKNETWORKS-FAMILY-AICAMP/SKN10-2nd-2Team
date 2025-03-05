@@ -1,4 +1,4 @@
-# SKN10-2nd-2Team
+![image](https://github.com/user-attachments/assets/457dbfd4-ea44-4724-aebf-b27bab68d0cc)# SKN10-2nd-2Team
 # 통신사 고객 이탈 예측 모델 개발 
 
 
@@ -134,8 +134,17 @@
 ✅ 월 청구 요금(MonthlyCharges)과 총 청구 금액(TotalCharges)
 - 월 요금이 높을수록 이탈 가능성 증가
 - 하지만 총 청구 금액이 많을수록(오랜 가입자일수록) 이탈률 감소
-### 1.3 결측치 처리
-
+### 1.3 데이터 전처리
+- 불필요한 컬럼 제거 (customerID, gender)
+- 결측치 처리 (TotalCharges - 중앙값 대체)
+- tenure 그룹화
+- 요금 관련 변수 추가(ChargesRatio, AverageMonthlyCharge, ChargeChange)
+- 가족 여부 추가
+- 자동 결제 여부 추가
+- One Hot Encoidng
+- 이진 변수 처리
+- 서비스 관련 변수 합산
+- 타겟 변수 변환
 ~~~python
 TotalCharges 결측치 처리 -> 중앙값으로 대체
 median_total_charges = df['TotalCharges'].median()
