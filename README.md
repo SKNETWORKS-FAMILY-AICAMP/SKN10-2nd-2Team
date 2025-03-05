@@ -1,4 +1,3 @@
-![image](https://github.com/user-attachments/assets/457dbfd4-ea44-4724-aebf-b27bab68d0cc)# SKN10-2nd-2Team
 # 통신사 고객 이탈 예측 모델 개발 
 
 
