@@ -4,7 +4,6 @@ import pandas as pd
 
 from sklearn.model_selection import train_test_split
 from imblearn.over_sampling import SMOTE
-import sys
 
 def data_loader(root: str='../.data/', filename: str='WA_Fn-UseC_-Telco-Customer-Churn.csv') -> pd.DataFrame:
   '''
