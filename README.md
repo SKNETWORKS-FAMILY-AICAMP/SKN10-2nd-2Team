@@ -243,11 +243,6 @@ df['TotalCharges'].fillna(median_total_charges, inplace=True)
 - ver7 모델 채택 (ROC-AUC와 F1-score 균형)
 - 실제 적용 시 임계값 조정으로 정밀도/재현율 trade-off 고려
 
-
-
-
-
-
 ---
 
 

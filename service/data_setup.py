@@ -4,21 +4,21 @@ import pandas as pd
 
 from sklearn.model_selection import train_test_split
 from imblearn.over_sampling import SMOTE
-import sys
 
-def data_loader(root: str='./.data', filename: str='WA_Fn-UseC_-Telco-Customer-Churn.csv') -> pd.DataFrame:
+def data_loader(root: str='../.data/', filename: str='WA_Fn-UseC_-Telco-Customer-Churn.csv') -> pd.DataFrame:
   '''
   입력변수 : root, filename
   root에서 csv파일을 불러와서 DataFrame형태로 return하는 함수
   '''
-  file_path = os.path.join(root, filename)
-  data = pd.read_csv(file_path, encoding='utf-8')
+  data = pd.read_csv(root + filename, encoding='utf-8')
   return data
 
-def data_preprocessing(data: pd.DataFrame) -> pd.DataFrame:
+def data_preprocessing(data: pd.DataFrame, target = None) -> pd.DataFrame:
   '''
-  입력변수 : data(DataFrame)
-  1. data를 입력받아 전처리해줌
+  입력변수 : data(DataFrame), target(string)
+  1. data(DataFrame)을 받음
+  2. target 변수 이름이 있을 경우 target값까지 전처리후 data를 return
+  3. target 변수 이름이 없을 경우 전처리 후 data를 return
   2. return data
   '''
   # 1) 불필요한 컬럼 제거
@@ -67,7 +67,7 @@ def data_preprocessing(data: pd.DataFrame) -> pd.DataFrame:
       data.fillna({col: 0}, inplace=True)
       data[col] = data[col].astype(int)
 
-  # 9) 서비스 관련 변수 합산 (MultipleLines, OnlineSecurity 등)
+  # 9) 서비스 관련 변수 합산 (MultipleLines, OnlineSecurity 등) 제외
   service_cols = [
     "MultipleLines", "OnlineSecurity", "OnlineBackup",
     "DeviceProtection", "TechSupport", "StreamingTV", "StreamingMovies"
@@ -75,10 +75,10 @@ def data_preprocessing(data: pd.DataFrame) -> pd.DataFrame:
   data['TotalServices'] = data[service_cols].sum(axis=1)
 
   # 10) 타겟 변수 변환 (Churn -> 0/1)
-  if 'Churn' in data.columns:
-    data['Churn'] = data['Churn'].map({'Yes': 1, 'No': 0})
+  if target in data.columns:
+    data[target] = data[target].map({'Yes': 1, 'No': 0})
 
-  # 11) 사용 후 불필요한 컬럼 제거 (ChargesRatio, AverageMonthlyCharge)
+  # 11) 사용 후 불필요한 컬럼 제거 (ChargesRatio)
   drop_cols_2 = ['ChargesRatio', 'AverageMonthlyCharge']
   for col in drop_cols_2:
     if col in data.columns:
@@ -86,7 +86,7 @@ def data_preprocessing(data: pd.DataFrame) -> pd.DataFrame:
 
   return data
 
-def input_mode(data: pd.DataFrame, train_mode: bool = True):
+def input_mode(data: pd.DataFrame, target = None):
   '''
   입력변수 : data(DataFrame), train_mode(boolean)
   1. train_mode가 True일 경우
@@ -97,18 +97,14 @@ def input_mode(data: pd.DataFrame, train_mode: bool = True):
   2. train_mode가 False일 경우 data_preprocessing 실행
     - 사용처 : streamlit에서 입력받았을 때 사용
   '''
-  if train_mode:
+  if target is data.columns:
         # 예: 'target' 컬럼을 타겟으로 가정 (실제 프로젝트에 맞게 수정)
-        if 'target' not in data.columns:
-            raise ValueError("DataFrame에 'target' 컬럼이 존재하지 않습니다. 타겟 컬럼명을 확인하세요.")
+        if target not in data.columns:
+            raise ValueError(f"DataFrame에 {target} 컬럼이 존재하지 않습니다. 타겟 컬럼명을 확인하세요.")
 
         # X, y 분리
-        X = data.drop(columns=['target'])
-        y = data['target']
-        
-        # 타겟 변수가 문자열인 경우 숫자로 변환
-        if y.dtype == 'object':
-            y = y.map({'Yes': 1, 'No': 0})
+        X = data.drop(columns=[target])
+        y = data[target]
 
         # 7:3으로 데이터 분할
         X_train, X_test, y_train, y_test = train_test_split(

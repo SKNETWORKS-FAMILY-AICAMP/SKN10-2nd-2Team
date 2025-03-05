@@ -1,11 +1,13 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
+from pathlib import Path
 
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-from service.data_setup import data_loader
+from service.data_setup import *
+from service.input_pred import input_preprocessing, tenure_predict, fit_columns
 
 def main():
     # 페이지 설정
@@ -80,9 +82,9 @@ def main():
                 st.session_state.carousel_index = 0
             
             images = [
-                {"path": "image.png", "caption": "서비스별 이탈 현황"},
-                {"path": "image copy.png", "caption": "계약 유형별 이탈 현황"},
-                {"path": "image copy 2.png", "caption": "인구통계별 이탈 현황"}
+                {"path": "plots/서비스_특성_분석.png", "caption": "서비스별 이탈 현황"},
+                {"path": "plots/주요_특성_분석.png", "caption": "계약 유형별 이탈 현황"},
+                {"path": "plots/인구통계_분석.png", "caption": "인구통계별 이탈 현황"}
             ]
             
             # 이미지 표시를 위한 컨테이너
@@ -117,18 +119,16 @@ def main():
             st.subheader("Feature Engineering")
             
             # 특성 중요도 시각화
-            st.write("#### 상위 20개 특성 중요도")
-            st.image("image copy 3.png", 
+            st.write("#### 상위 10개 특성 중요도")
+            st.image("plots/특성중요도.png", 
                     caption="특성 중요도 분석 결과",
                     use_container_width=True)
             
             # 특성 중요도 설명
             st.write("""
             주요 특성 분석 결과:
-            - 서비스당 요금, 월별 요금(MonthlyCharges), 이용 기간(tenure)이 가장 중요한 특성으로 나타남
-            - 고객 위험도와 계약 기간 수치도 높은 중요도를 보임
-            - 디지털 친화도와 인터넷 서비스 등급이 중간 정도의 중요도를 가짐
-            - 인구통계학적 특성(성별, SeniorCitizen 등)은 상대적으로 낮은 중요도를 보임
+            - 전자 결제(Electronic check), 요금 변동(ChargeChange)가 가장 중요도가 높게 학습됨
+            - 이용 기간(tenure)도 특성 중요도도 유의미하게 높게 판단되어 시점 예측도 가능할 것으로 예상됨
             """)
             
             # EDA 섹션 추가
@@ -203,50 +203,125 @@ def main():
     
     else:
         st.header("이탈 가능성 예측 프로그램")
-        
+        # 딕셔너리 정리
+        # 계약 기간
+        contract_dict = {
+            '1개월 계약' : 'Month-to-month',
+            '1년 계약' : 'One year',
+            '2년 계약' : 'Two year'
+        }
+        # 바이너리 dict
+        binary_dict_ver1 = {
+            '아니오' : 'No',
+            '예' : 'Yes'
+        }
+        binary_dict_ver2 = {
+            '없음' : 'No',
+            '있음' : 'Yes'
+        }
+        internet_dict = {
+            '가입하지 않음' : 'No',
+            'DSL 인터넷 (전화선 인터넷)' : 'DSL',
+            '광섬유 인터넷 (광랜)' : 'Fiber optic'
+        }
+        internet_service_dict = {
+            '온라인 보안 서비스' : 'OnlineSecurity',
+            '온라인 백업 서비스' : 'OnlineBackup',
+            '기기 보호 서비스' : 'DeviceProtection',
+            '기술 지원 서비스' : 'TechSupport',
+            '스마트 TV 서비스' : 'StreamingTV',
+            '스마트 영화 서비스' : 'StreamingMovies'
+        }
+        payment_method_dict = {
+            '전자 결제' : 'Electronic check',
+            '지로 납부' : 'Mailed check',
+            '자동 이체' : 'Bank transfer (automatic)',
+            '자동 카드 결제' : 'Credit card (automatic)'
+        }
         # 입력 폼 생성
-        with st.form("prediction_form"):
-            # 연령
-            st.write("#### 연령")
-            age = st.text_input("연령", key="age")
+        with st.container(border=True):
+            pred_col1, pred_col2 = st.columns(2)
+            with pred_col1:
+                # 연령
+                st.write("#### 연령")
+                age = st.number_input("", key="age", step = 1)
+                # 배우자 여부
+                st.write('### 배우자 여부')
+                st.selectbox("", binary_dict_ver2.keys(), key="partner")
+            
+            with pred_col2:
+                # 게약 기간
+                st.write("#### 계약 기간")
+                st.selectbox("", contract_dict.keys(), key="contract")
+                # 부양가족 여부
+                st.write('### 부양가족 여부')
+                st.selectbox("", binary_dict_ver2.keys(), key="dependents")
+            
             # 휴대폰 가입 여부
             st.write("#### 휴대폰 가입 여부")
-            phone_subscription = st.selectbox("", ["Yes", "No"], key="phone")
-            
-            # 다중회선 사용 여부
-            st.write("#### 다중회선 사용 여부")
-            multiple_lines = st.radio("", ["Yes", "No"], key="multiple_lines")
+            st.selectbox("", binary_dict_ver1.keys(), key="phone")
+            # 이용중인 휴대폰 서비스 선택
+            if binary_dict_ver1[st.session_state.phone] == "Yes":
+                st.write("#### 다중회선 사용 여부")
+                st.radio("", binary_dict_ver1.keys(), key="multiple_lines")
             
             # 인터넷 가입 여부
             st.write("#### 인터넷 가입 여부")
-            internet_type = st.selectbox("", ["DSL", "Fiber optic", "No"], key="internet")
-            
+            st.selectbox("", internet_dict.keys(), key="internetservice")
+        
             # 이용하고 있는 서비스 선택
-            st.write("#### 이용하고 있는 서비스 선택")
-            services = st.multiselect("",
-                                    ["OnlineSecurity", "OnlineBackup", "DeviceProtection", "TechSupport", "StreamingTV", "StreamingMovies"],
-                                    default=["OnlineSecurity"])
+            if internet_dict[st.session_state.internetservice] != "No":
+                st.write("#### 이용하고 있는 서비스 선택")
+                st.multiselect(
+                    "",
+                    internet_service_dict.keys(), key = "internet_service")
+            
+            pred_col3, pred_col4 = st.columns(2)
+            with pred_col3:
+                # 결제 수단
+                st.write("#### 결제 수단")
+                st.selectbox("", payment_method_dict.keys(), key="payment_method")
+            with pred_col4:
+                # 온라인 청구서 여부
+                st.write("#### 온라인 청구서 신청 여부")
+                st.selectbox("", binary_dict_ver1.keys(), key="paperlessbilling")
             
             # 예측하기 버튼
-            predict_button = st.form_submit_button("예측하기", type="primary", use_container_width=True)
+            predict_button = st.button("예측하기", type="primary", use_container_width=True)
             
             if predict_button:
                 # input_pred.py의 tenure_predict 함수에 전달할 입력 데이터 구성
+                n = 61
                 input_data = {
-                    'age': age,
-                    'phone_subscription': phone_subscription,
-                    'multiple_lines': multiple_lines,
-                    'internet_type': internet_type,
-                    'services': services,
-                    'payment_method': 'Credit card (automatic)',  # 기본값
-                    'paperless_billing': 'Yes'  # 기본값
+                    'customerID' : [''] * n,
+                    'gender' : [''] * n,
+                    'SeniorCitizen' : [int(age <= 60)] * n,
+                    'Partner' : [binary_dict_ver2[st.session_state.partner]] * n,
+                    'Dependents' : [binary_dict_ver2[st.session_state.dependents]] * n,
+                    'tenure' : range(0, n, 1),
+                    'PhoneService' : [binary_dict_ver1[st.session_state.phone]] * n,
+                    'MultipleLines' : ['No phone service' if binary_dict_ver1[st.session_state.phone] == 'No' else binary_dict_ver1[st.session_state.multiple_lines]] * n,
+                    'InternetService' : [internet_dict[st.session_state.internetservice]] * n,
+                    'OnlineSecurity' : ['No internet service' if internet_dict[st.session_state.internetservice] == 'No' else 'Yes' if '온라인 보안 서비스' in st.session_state.internet_service else 'No'] * n,
+                    'OnlineBackup' : ['No internet service' if internet_dict[st.session_state.internetservice] == 'No' else 'Yes' if '온라인 백업 서비스' in st.session_state.internet_service else 'No'] * n,
+                    'DeviceProtection' : ['No internet service' if internet_dict[st.session_state.internetservice] == 'No' else 'Yes' if '기기 보호 서비스' in st.session_state.internet_service else 'No'] * n,
+                    'TechSupport' : ['No internet service' if internet_dict[st.session_state.internetservice] == 'No' else 'Yes' if '기술 지원 서비스' in st.session_state.internet_service else 'No'] * n,
+                    'StreamingTV' : ['No internet service' if internet_dict[st.session_state.internetservice] == 'No' else 'Yes' if '스마트 TV 서비스' in st.session_state.internet_service else 'No'] * n,
+                    'StreamingMovies' : ['No internet service' if internet_dict[st.session_state.internetservice] == 'No' else 'Yes' if '스마트 영화 서비스' in st.session_state.internet_service else 'No'] * n,
+                    'Contract' : [contract_dict[st.session_state.contract]] * n,
+                    'PaperlessBilling' : [binary_dict_ver1[st.session_state.paperlessbilling]] * n,
+                    'PaymentMethod' : [payment_method_dict[st.session_state.payment_method]] * n
                 }
-                
+                df = pd.DataFrame(input_data)
+                # MonthlyChargets, TotalCharges 생성
+                df = input_preprocessing(df)
+                # 전처리
+                df = input_mode(df)
+                # 컬럼 정리
+                df = fit_columns(df)
+                # input_mode(df)
                 # 예측 수행
-                from service.input_pred import tenure_predict
-                result = tenure_predict(input=input_data,
-                                        model_name='best_randomforestclassifier_grid.pkl') 
-                                        # todo: model_name 변경
+                result = tenure_predict(data=df, root = Path('models'), model_name = 'rf.pkl')
                 
                 # 예측 결과 표시
                 st.success("예측이 완료되었습니다!")

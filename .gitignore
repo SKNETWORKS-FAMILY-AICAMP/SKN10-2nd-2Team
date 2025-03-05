@@ -1,1 +1,10 @@
 .venv
+.gitignore
+EDA.ipynb
+model_run.py
+model.ipynb
+model2.ipynb
+model3.ipynb
+catboost_info
+service/__pycache__
+test.ipynb
