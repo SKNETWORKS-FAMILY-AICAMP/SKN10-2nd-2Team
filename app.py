@@ -82,9 +82,9 @@ def main():
                 st.session_state.carousel_index = 0
             
             images = [
-                {"path": "image.png", "caption": "서비스별 이탈 현황"},
-                {"path": "image copy.png", "caption": "계약 유형별 이탈 현황"},
-                {"path": "image copy 2.png", "caption": "인구통계별 이탈 현황"}
+                {"path": "plots/서비스_특성_분석.png", "caption": "서비스별 이탈 현황"},
+                {"path": "plots/주요_특성_분석.png", "caption": "계약 유형별 이탈 현황"},
+                {"path": "plots/인구통계_분석.png", "caption": "인구통계별 이탈 현황"}
             ]
             
             # 이미지 표시를 위한 컨테이너
@@ -119,18 +119,16 @@ def main():
             st.subheader("Feature Engineering")
             
             # 특성 중요도 시각화
-            st.write("#### 상위 20개 특성 중요도")
-            st.image("image copy 3.png", 
+            st.write("#### 상위 10개 특성 중요도")
+            st.image("plots/특성중요도.png", 
                     caption="특성 중요도 분석 결과",
                     use_container_width=True)
             
             # 특성 중요도 설명
             st.write("""
             주요 특성 분석 결과:
-            - 서비스당 요금, 월별 요금(MonthlyCharges), 이용 기간(tenure)이 가장 중요한 특성으로 나타남
-            - 고객 위험도와 계약 기간 수치도 높은 중요도를 보임
-            - 디지털 친화도와 인터넷 서비스 등급이 중간 정도의 중요도를 가짐
-            - 인구통계학적 특성(성별, SeniorCitizen 등)은 상대적으로 낮은 중요도를 보임
+            - 전자 결제(Electronic check), 요금 변동(ChargeChange)가 가장 중요도가 높게 학습됨
+            - 이용 기간(tenure)도 특성 중요도도 유의미하게 높게 판단되어 시점 예측도 가능할 것으로 예상됨
             """)
             
             # EDA 섹션 추가
