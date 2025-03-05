@@ -172,6 +172,38 @@ df['TotalCharges'].fillna(median_total_charges, inplace=True)
 
 ---
 
+
+### 모델을 이용한 이탈 시점 예측
+
+### 인자값 받기
+<img width="1317" alt="Screenshot 2025-03-05 at 9 53 16 AM" src="https://github.com/user-attachments/assets/ceda976d-7948-4c56-9533-365a5b4ee01a" />
+
+### 모델을 활용한 이탈예측
+<img width="1316" alt="Screenshot 2025-03-05 at 9 53 33 AM" src="https://github.com/user-attachments/assets/d95c5152-a2d4-43b4-baae-f3b648cf5896" />
+
+<table>
+  <tr>
+    <th>개월 수</th>
+    <th>0개월</th>
+    <th>1개월</th>
+    <th>2개월</th>
+    <th>3개월</th>
+  </tr>
+   <tr>
+    <th>모델 예측 값</th>
+    <th>유지</th>
+    <th>유지</th>
+    <th>유지</th>
+    <th>이탈</th>
+  </tr>
+<table/>
+
+### 이탈 시점 예측
+<img width="1315" alt="Screenshot 2025-03-05 at 10 01 36 AM" src="https://github.com/user-attachments/assets/f5dfa872-84da-4106-a453-dd30140a7ad0" />
+
+---
+
+
 ## 4. 결과 및 시사점
 
 
