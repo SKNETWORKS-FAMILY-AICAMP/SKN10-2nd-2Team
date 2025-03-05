@@ -113,7 +113,6 @@
 
 ✅ 인터넷 서비스 유형(InternetService)
 - Fiber optic(광 인터넷) 사용자가 DSL보다 이탈률이 높음
-- 광 인터넷 사용자들은 요금이 높아서 해지할 가능성이 큼
 
 ✅ 결제 방식(PaymentMethod)과 이탈률
 - 전자수표(Electronic check) 사용자의 이탈률이 가장 높음
