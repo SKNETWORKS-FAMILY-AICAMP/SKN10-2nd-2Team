@@ -1,4 +1,4 @@
-# SKN10-2nd-2Team
+![화면1](https://github.com/user-attachments/assets/a7cd706a-6efd-406d-9e10-beae66035ec8)# SKN10-2nd-2Team
 # 통신사 고객 이탈 예측 모델 개발 
 
 
@@ -196,8 +196,7 @@ df['TotalCharges'].fillna(median_total_charges, inplace=True)
 ### 모델을 이용한 이탈 시점 예측
 
 ### 인자값 받기
-<img width="1317" alt="Screenshot 2025-03-05 at 9 53 16 AM" src="https://github.com/user-attachments/assets/ceda976d-7948-4c56-9533-365a5b4ee01a" />
-
+<img width="1317" alt="Screenshot 2025-03-05 at 9 53 16 AM" src="https://github.com/user-attachments/assets/618ef5a9-5c4d-4e0d-a74e-0d229cd06f40"/>
 ### 모델을 활용한 이탈예측
 <img width="1316" alt="Screenshot 2025-03-05 at 9 53 33 AM" 
      src="https://github.com/user-attachments/assets/d95c5152-a2d4-43b4-baae-f3b648cf5896"  
@@ -223,7 +222,7 @@ df['TotalCharges'].fillna(median_total_charges, inplace=True)
 ### 이탈 시점 예측
 
 <img width="1315" alt="Screenshot 2025-03-05 at 10 01 36 AM" 
-     src="https://github.com/user-attachments/assets/f5dfa872-84da-4106-a453-dd30140a7ad0"  
+     src="https://github.com/user-attachments/assets/8709ff0c-bf41-4a16-8af0-a4d7d86faa39"  
      style="border: 3px solid black; border-radius: 5px;">
 
 ---
