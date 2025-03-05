@@ -24,13 +24,12 @@
     <th>전서빈</th>
   </tr>
   <tr>
-    <td><img src="https://github.com/user-attachments/assets/1d56cc60-e0d5-401b-b365-3f38f25bed43" width="175" height="175"></td>
-    <td><img src="https://github.com/user-attachments/assets/1d56cc60-e0d5-401b-b365-3f38f25bed43" width="175" height="175"></td>
-    <td><img src="https://github.com/user-attachments/assets/1d56cc60-e0d5-401b-b365-3f38f25bed43" width="175" height="175"></td>
-    <td><img src="https://github.com/user-attachments/assets/1d56cc60-e0d5-401b-b365-3f38f25bed43" width="175" height="175"></td>
-    <td><img src="https://github.com/user-attachments/assets/1d56cc60-e0d5-401b-b365-3f38f25bed43" width="175" height="175"></td>
-    <td><img src="https://github.com/user-attachments/assets/1d56cc60-e0d5-401b-b365-3f38f25bed43" width="175" height="175"></td>
-
+    <td><img src="https://github.com/user-attachments/assets/30860b88-995a-4320-a88e-4371632b9334" width="175" height="175"></td>
+    <td><img src="https://github.com/user-attachments/assets/27188fe4-37ae-4287-a1cf-f3b5cff6ab87" width="175" height="175"></td>
+    <td><img src="https://github.com/user-attachments/assets/534cc407-97e6-4999-ac57-86d7f7d3c699" width="175" height="175"></td>
+    <td><img src="https://github.com/user-attachments/assets/3ac03c06-6074-47b4-bc72-d8f82fe2dab4" width="175" height="175"></td>
+    <td><img src="https://github.com/user-attachments/assets/e714bc2a-27fe-4128-8bf9-d48976374374" width="175" height="175"></td>
+    <td><img src="https://github.com/user-attachments/assets/51354b21-4396-4dfa-91e9-04deb17f9792" width="175" height="175"></td>
 
   </tr>
   <tr>
