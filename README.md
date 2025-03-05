@@ -108,15 +108,36 @@
 | 서비스 유형 | Fiber optic<br>DSL<br>미사용 | 41.9%<br>19.0%<br>7.4% | 44.0%<br>34.4%<br>21.6% |
 | 결제 방식 | Electronic check<br>Mailed check<br>Bank transfer<br>Credit card | 45.3%<br>19.1%<br>16.7%<br>15.2% | 33.6%<br>23.2%<br>21.8%<br>21.4% |
 
-### 인구통계학적 특성 별 이탈율
-![image](https://github.com/user-attachments/assets/f3702d32-cc05-49c1-b22d-ba7c9fa9b001)
+✅ 계약 유형(Contract)에 따른 이탈률
+- 월 단위 계약 고객의 이탈률이 매우 높음
+- 1년, 2년 계약 고객은 이탈 가능성이 낮음
+➡ 장기 계약 유도 필요
 
-### 서비스 별 이탈율
+✅ 인터넷 서비스 유형(InternetService)
+- Fiber optic(광 인터넷) 사용자가 DSL보다 이탈률이 높음
+- 광 인터넷 사용자들은 요금이 높아서 해지할 가능성이 큼
+
+✅ 결제 방식(PaymentMethod)과 이탈률
+- 전자수표(Electronic check) 사용자의 이탈률이 가장 높음
+- 자동이체(Credit Card, Bank Transfer) 사용자들은 이탈률 낮음
+➡ 자동이체 가입 유도 필요
+#### 인구통계학적 특성 별 이탈율
+![image](https://github.com/user-attachments/assets/f3702d32-cc05-49c1-b22d-ba7c9fa9b001)
+- SeniorCitizen (고령자): (고령일수록 이탈 가능성 조금 높음)
+#### 서비스 별 이탈율
 ![image](https://github.com/user-attachments/assets/b46f8c03-a29b-4ead-b4fd-15f8ee27f7b9)
 
-### 주요 요인별 이탈률 비교 및 분석
+#### 주요 요인별 이탈률 비교 및 분석
 ![image](https://github.com/user-attachments/assets/d65a54b5-efd6-4293-9c60-ef03c9ff2c32)
 
+✅ 가입 기간(tenure)
+- 가입 기간이 짧을수록 이탈률이 높음
+- 10개월 미만 가입자 중 상당수가 이탈
+- **장기 계약자(2년)**의 이탈률이 낮음
+
+✅ 월 청구 요금(MonthlyCharges)과 총 청구 금액(TotalCharges)
+- 월 요금이 높을수록 이탈 가능성 증가
+- 하지만 총 청구 금액이 많을수록(오랜 가입자일수록) 이탈률 감소
 ### 1.3 결측치 처리
 
 ~~~python
