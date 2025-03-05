@@ -108,13 +108,13 @@
 | 서비스 유형 | Fiber optic<br>DSL<br>미사용 | 41.9%<br>19.0%<br>7.4% | 44.0%<br>34.4%<br>21.6% |
 | 결제 방식 | Electronic check<br>Mailed check<br>Bank transfer<br>Credit card | 45.3%<br>19.1%<br>16.7%<br>15.2% | 33.6%<br>23.2%<br>21.8%<br>21.4% |
 
-## 인구통계학적 특성 별 이탈율
+### 인구통계학적 특성 별 이탈율
 ![image](https://github.com/user-attachments/assets/f3702d32-cc05-49c1-b22d-ba7c9fa9b001)
 
-## 서비스 별 이탈율
+### 서비스 별 이탈율
 ![image](https://github.com/user-attachments/assets/b46f8c03-a29b-4ead-b4fd-15f8ee27f7b9)
 
-## 주요 요인별 이탈률 비교 및 분석
+### 주요 요인별 이탈률 비교 및 분석
 ![image](https://github.com/user-attachments/assets/d65a54b5-efd6-4293-9c60-ef03c9ff2c32)
 
 ### 1.3 결측치 처리
