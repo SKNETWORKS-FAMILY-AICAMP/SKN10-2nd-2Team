@@ -1,7 +1,6 @@
 # SKN10-2nd-2Team
 # 통신사 고객 이탈 예측 모델 개발 
-<img width="1066" alt="Screenshot 2025-03-04 at 2 13 13 PM" src="https://github.com/user-attachments/assets/a9ea819c-1998-4d74-bb36-6b3cc5f977f9" />
-<img width="1067" alt="Screenshot 2025-03-04 at 2 13 59 PM" src="https://github.com/user-attachments/assets/b3fda6ad-b002-4844-b92c-5b6de9bba23d" />
+
 
 ## 프로젝트 개요
 통신사 고객 데이터를 활용하여 고객 이탈을 예측하고, 이탈 가능성이 높은 고객을 조기에 식별하여 선제적인 대응을 가능하게 하는 예측 모델 개발
