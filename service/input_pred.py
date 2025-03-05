@@ -18,27 +18,13 @@ import numpy as np
 import pandas as pd
 import os
 from pathlib import Path
+import joblib
 
 from service.data_setup import data_loader, data_preprocessing
 from service.models import data_pred
 
-# Use a more reliable path construction
-current_dir = os.path.dirname(os.path.abspath(__file__))
-project_root = os.path.dirname(current_dir)
-data_path = os.path.join(project_root, 'data', 'WA_Fn-UseC_-Telco-Customer-Churn.csv')
-
-# Try to load the data, with a fallback
-try:
-    df = pd.read_csv(data_path)
-except FileNotFoundError:
-    # Fallback to alternative location
-    try:
-        df = pd.read_csv(os.path.join(project_root, '.data', 'WA_Fn-UseC_-Telco-Customer-Churn.csv'))
-    except FileNotFoundError:
-        # Use data_loader as a last resort
-        df = data_loader('./data', 'WA_Fn-UseC_-Telco-Customer-Churn.csv')
-
-def __MonthlyCharges_Contract(data:pd.DataFrame = data_loader(), **kwargs):
+# 서비스 및 계약 기간에 따른 월 요금 평균 계산하는 함수
+def MonthlyCharges_Contract(data:pd.DataFrame = data_loader()) -> pd.pivot_table:
   service_list = [
       'MultipleLines',
       'InternetService',
@@ -61,38 +47,7 @@ def __MonthlyCharges_Contract(data:pd.DataFrame = data_loader(), **kwargs):
   
   return MonthlyCharges_df
 
-def __input_make_dataframe(input:dict) -> pd.DataFrame:
-  # 모든 컬럼에 대해 적절한 기본값으로 DataFrame 초기화
-  df = pd.DataFrame({
-    # 식별자 컬럼 (기본값: 0 또는 빈 문자열)
-    'customID': [''],
-    'gender': ['Male'],  # 기본값: 남성
-    
-    # 이진 특성 컬럼 (기본값: 'No')
-    'SeniorCitizen': [0],  # 0: 아니오, 1: 예
-    'Partner': ['No'],
-    'Dependents': ['No'],
-    'PhoneService': ['No'],
-    'MultipleLines': ['No'],
-    'OnlineSecurity': ['No'],
-    'OnlineBackup': ['No'],
-    'DeviceProtection': ['No'],
-    'TechSupport': ['No'],
-    'StreamingTV': ['No'],
-    'StreamingMovies': ['No'],
-    'PaperlessBilling': ['No'],
-    
-    # 범주형 컬럼 (기본값: 가장 일반적인 값)
-    'InternetService': ['DSL'],
-    'Contract': ['Month-to-month'],
-    'PaymentMethod': ['Electronic check'],
-    
-    # 수치형 컬럼 (기본값: 0)
-    'tenure': [0],
-    'MonthlyCharges': [0.0],
-    'TotalCharges': [0.0]
-  })
-  
+def input_preprocessing(data:pd.DataFrame) -> pd.DataFrame:
   service_list = [
       'MultipleLines',
       'InternetService',
@@ -103,6 +58,11 @@ def __input_make_dataframe(input:dict) -> pd.DataFrame:
       'StreamingTV',
       'StreamingMovies']
   
+  data['MonthlyCharges'] = MonthlyCharges_Contract()[tuple(data.loc[0, service_list].values)]
+  data['TotalCharges'] = data['MonthlyCharges'] * data['tenure']
+
+  return data
+''' 수정
   # 입력 데이터에서 값 설정 (입력된 값만 덮어씀)
   # 추가 필드 설정
   if 'payment_method' in input:
@@ -167,7 +127,7 @@ def __input_make_dataframe(input:dict) -> pd.DataFrame:
   service_values = tuple(df.loc[0, service_list].values)
   
   # Get the MonthlyCharges from the pivot table
-  monthly_charges_data = __MonthlyCharges_Contract()
+  monthly_charges_data = MonthlyCharges_Contract()
   
   # Use a try-except block to handle potential KeyError
   try:
@@ -186,26 +146,31 @@ def __input_make_dataframe(input:dict) -> pd.DataFrame:
     df_expanded.loc[r, 'TotalCharges'] = r * df_expanded.loc[r, 'MonthlyCharges']
 
   return df_expanded
+  '''
 
-def __input_preprocessing(input:dict) -> pd.DataFrame:
-  df = data_preprocessing(__input_make_dataframe(input = input))
-  transpose_column = ['SeniorCitizen', 'Partner', 'Dependents', 'tenure', 'PhoneService',
-      'MultipleLines', 'OnlineSecurity', 'OnlineBackup', 'DeviceProtection',
-      'TechSupport', 'StreamingTV', 'StreamingMovies', 'PaperlessBilling',
-      'MonthlyCharges', 'TotalCharges', 'tenure_group', 'ChargeChange',
-      'Family', 'AutoPayment', 'InternetService_Fiber optic',
-      'InternetService_No', 'Contract_One year', 'Contract_Two year',
-      'PaymentMethod_Credit card (automatic)',
-      'PaymentMethod_Electronic check', 'PaymentMethod_Mailed check',
-      'TotalServices']
-  for col in transpose_column:
-    if col not in df.columns:
-      df[col] = 0
-  df = df[transpose_column]
-  return df
+  # transpose_column = ['SeniorCitizen', 'Partner', 'Dependents', 'tenure', 'PhoneService',
+  #     'MultipleLines', 'OnlineSecurity', 'OnlineBackup', 'DeviceProtection',
+  #     'TechSupport', 'StreamingTV', 'StreamingMovies', 'PaperlessBilling',
+  #     'MonthlyCharges', 'TotalCharges', 'tenure_group', 'ChargeChange',
+  #     'Family', 'AutoPayment', 'InternetService_Fiber optic',
+  #     'InternetService_No', 'Contract_One year', 'Contract_Two year',
+  #     'PaymentMethod_Credit card (automatic)',
+  #     'PaymentMethod_Electronic check', 'PaymentMethod_Mailed check',
+  #     'TotalServices']
 
-def tenure_predict(input:dict, root:Path = Path('../models'), model_name = 'rf.pkl'):
-  pred = data_pred(data = __input_preprocessing(input = input), root = root, model_name = model_name)
+def fit_columns(data:pd.DataFrame, root:Path = Path('models'), model_name = 'rf.pkl'):
+  model = joblib.load(root / model_name)
+  model_columns = model.feature_names_in_
+  for col in model_columns:
+    if col not in data.columns:
+      data[col] = 0
+  data = data[model_columns]
+  
+  return data
+
+def tenure_predict(data:pd.DataFrame, root:Path = Path('./models'), model_name = 'rf.pkl'):
+  pred = data_pred(input = data, 
+                  root = root, model_name = model_name)
   for month in range(len(pred) - 1):
     if pred[month] != pred[month + 1]:
       break
