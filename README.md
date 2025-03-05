@@ -209,9 +209,13 @@ df['TotalCharges'].fillna(median_total_charges, inplace=True)
     <th>1개월</th>
     <th>2개월</th>
     <th>3개월</th>
+    <th>4개월</th>
+    <th>5개월</th>
   </tr>
    <tr>
     <th>모델 예측 값</th>
+    <th>유지</th>
+    <th>유지</th>
     <th>유지</th>
     <th>유지</th>
     <th>유지</th>
